@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Realm</string>
+    <string name="hintName">Nombre del lugar:</string>
+    <string name="hintCountry">País:</string>
 </resources>

@@ -2,4 +2,5 @@
     <string name="app_name">Realm</string>
     <string name="hintName">Nombre del lugar:</string>
     <string name="hintCountry">País:</string>
+    <string name="confirm">¿Seguro que desea eliminar este lugar?</string>
 </resources>

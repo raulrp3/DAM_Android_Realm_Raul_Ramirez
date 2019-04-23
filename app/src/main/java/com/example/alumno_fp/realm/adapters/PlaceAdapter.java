@@ -15,11 +15,12 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
-public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.ViewHolderPlace> implements View.OnClickListener {
+public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.ViewHolderPlace> implements View.OnClickListener, View.OnLongClickListener {
 
     private Context context;
     private List<Place> places;
     private View.OnClickListener listener;
+    private View.OnLongClickListener listenerLong;
 
     public PlaceAdapter(Context context, List<Place> places){
         this.context = context;
@@ -31,6 +32,7 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.ViewHolderPl
     public ViewHolderPlace onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_place,viewGroup,false);
         view.setOnClickListener(this);
+        view.setOnLongClickListener(this);
         return new ViewHolderPlace(view);
     }
 
@@ -57,6 +59,19 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.ViewHolderPl
         if (listener != null){
             listener.onClick(v);
         }
+    }
+
+    public void setOnLongClickListener(View.OnLongClickListener listenerLong){
+        this.listenerLong = listenerLong;
+    }
+
+    @Override
+    public boolean onLongClick(View v) {
+        if (listenerLong != null){
+            listenerLong.onLongClick(v);
+        }
+
+        return false;
     }
 
     public class ViewHolderPlace extends RecyclerView.ViewHolder{

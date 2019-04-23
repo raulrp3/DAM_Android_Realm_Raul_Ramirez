@@ -64,6 +64,15 @@ public class MainActivity extends AppCompatActivity implements RealmChangeListen
                 updatePlace(place);
             }
         });
+
+        placeAdapter.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Place place = places.get(rvPlaces.getChildAdapterPosition(v));
+                deletePlace(place);
+                return false;
+            }
+        });
     }
 
     private void insertPlace(){
@@ -138,6 +147,30 @@ public class MainActivity extends AppCompatActivity implements RealmChangeListen
         dialog.show();
     }
 
+    public void deletePlace(final Place place){
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        final View view = LayoutInflater.from(MainActivity.this).inflate(R.layout.confirm_dialog, null);
+        builder.setView(view);
+
+        builder.setMessage("Eliminar un lugar");
+        builder.setPositiveButton("Eliminar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                delete(place);
+            }
+        });
+
+        builder.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
     @Override
     public void onChange(RealmResults<Place> places) {
         placeAdapter.notifyDataSetChanged();
@@ -167,6 +200,13 @@ public class MainActivity extends AppCompatActivity implements RealmChangeListen
         realm.beginTransaction();
         place.setName(name);
         place.setCountry(country);
+        realm.commitTransaction();
+    }
+
+    public void delete(Place place){
+        realm.beginTransaction();
+        assert place != null;
+        place.deleteFromRealm();
         realm.commitTransaction();
     }
 }

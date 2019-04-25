@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.alumno_fp.realm.adapters.PlaceAdapter;
+import com.example.alumno_fp.realm.interfaces.AdapterCustomClick;
 import com.example.alumno_fp.realm.models.Place;
 import com.example.alumno_fp.realm.repositories.PlaceRepository;
 import com.example.alumno_fp.realm.utils.MValidation;
@@ -45,39 +46,31 @@ public class MainActivity extends AppCompatActivity implements RealmChangeListen
         places.addChangeListener(this);
         rvPlaces = findViewById(R.id.rvPlaces);
         rvPlaces.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-        placeAdapter = new PlaceAdapter(getApplicationContext(),places);
-        rvPlaces.setAdapter(placeAdapter);
+        placeAdapter = new PlaceAdapter(getApplicationContext(), places, new AdapterCustomClick() {
+            @Override
+            public void onClick(View view, int index) {
+                Place place = places.get(index);
+                dialogUpdate(place);
+            }
 
-        listeOnClick();
-    }
+            @Override
+            public void onLongClick(View view, int index) {
+                Place place = places.get(index);
+                dialogDelete(place);
+            }
+        });
 
-    private void listeOnClick(){
         buttonAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                insertPlace();
+                dialogInsert();
             }
         });
 
-        placeAdapter.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Place place = places.get(rvPlaces.getChildAdapterPosition(v));
-                updatePlace(place);
-            }
-        });
-
-        placeAdapter.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                Place place = places.get(rvPlaces.getChildAdapterPosition(v));
-                deletePlace(place);
-                return false;
-            }
-        });
+        rvPlaces.setAdapter(placeAdapter);
     }
 
-    private void insertPlace(){
+    private void dialogInsert(){
         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
         final View view = LayoutInflater.from(MainActivity.this).inflate(R.layout.place_dialog, null);
         builder.setView(view);
@@ -110,7 +103,7 @@ public class MainActivity extends AppCompatActivity implements RealmChangeListen
         dialog.show();
     }
 
-    private void updatePlace(final Place place){
+    private void dialogUpdate(final Place place){
         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
         final View view = LayoutInflater.from(MainActivity.this).inflate(R.layout.place_dialog, null);
         builder.setView(view);
@@ -149,7 +142,7 @@ public class MainActivity extends AppCompatActivity implements RealmChangeListen
         dialog.show();
     }
 
-    public void deletePlace(final Place place){
+    public void dialogDelete(final Place place){
         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
         final View view = LayoutInflater.from(MainActivity.this).inflate(R.layout.confirm_dialog, null);
         builder.setView(view);

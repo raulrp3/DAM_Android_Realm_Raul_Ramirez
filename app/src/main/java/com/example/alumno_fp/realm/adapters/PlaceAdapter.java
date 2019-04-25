@@ -9,31 +9,47 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.alumno_fp.realm.R;
+import com.example.alumno_fp.realm.interfaces.AdapterCustomClick;
 import com.example.alumno_fp.realm.models.Place;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
-public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.ViewHolderPlace> implements View.OnClickListener, View.OnLongClickListener {
+public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.ViewHolderPlace>{
 
     private Context context;
     private List<Place> places;
-    private View.OnClickListener listener;
-    private View.OnLongClickListener listenerLong;
+    private AdapterCustomClick listener;
 
-    public PlaceAdapter(Context context, List<Place> places){
+    public PlaceAdapter(Context context, List<Place> places, AdapterCustomClick listener){
         this.context = context;
         this.places = places;
+        this.listener = listener;
     }
 
     @NonNull
     @Override
     public ViewHolderPlace onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_place,viewGroup,false);
-        view.setOnClickListener(this);
-        view.setOnLongClickListener(this);
-        return new ViewHolderPlace(view);
+        final View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_place,viewGroup,false);
+        final ViewHolderPlace vhp = new ViewHolderPlace(view);
+
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.onClick(view, vhp.getAdapterPosition());
+            }
+        });
+
+        view.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                listener.onLongClick(view, vhp.getAdapterPosition());
+                return false;
+            }
+        });
+
+        return vhp;
     }
 
     @Override
@@ -48,30 +64,6 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.ViewHolderPl
     @Override
     public int getItemCount() {
         return places.size();
-    }
-
-    public void setOnClickListener(View.OnClickListener listener){
-        this.listener = listener;
-    }
-
-    @Override
-    public void onClick(View v) {
-        if (listener != null){
-            listener.onClick(v);
-        }
-    }
-
-    public void setOnLongClickListener(View.OnLongClickListener listenerLong){
-        this.listenerLong = listenerLong;
-    }
-
-    @Override
-    public boolean onLongClick(View v) {
-        if (listenerLong != null){
-            listenerLong.onLongClick(v);
-        }
-
-        return false;
     }
 
     public class ViewHolderPlace extends RecyclerView.ViewHolder{

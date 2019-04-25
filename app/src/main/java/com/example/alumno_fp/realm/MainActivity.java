@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import com.example.alumno_fp.realm.adapters.PlaceAdapter;
 import com.example.alumno_fp.realm.models.Place;
+import com.example.alumno_fp.realm.repository.PlaceRepository;
 
 import io.realm.Realm;
 import io.realm.RealmChangeListener;
@@ -39,7 +40,7 @@ public class MainActivity extends AppCompatActivity implements RealmChangeListen
 
     private void initUI(){
         buttonAdd = findViewById(R.id.fabAdd);
-        select();
+        places = PlaceRepository.select(realm,places);
         places.addChangeListener(this);
         rvPlaces = findViewById(R.id.rvPlaces);
         rvPlaces.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
@@ -90,7 +91,7 @@ public class MainActivity extends AppCompatActivity implements RealmChangeListen
                 String name = etName.getText().toString().trim();
                 String country = etCountry.getText().toString().trim();
                 if (validate(name) && validate(country)){
-                    insert(name,country);
+                    PlaceRepository.insert(realm,name,country);
                 }else{
                     Toast.makeText(getApplicationContext(),"¡Campos obligatorios!",Toast.LENGTH_SHORT).show();
                 }
@@ -129,7 +130,7 @@ public class MainActivity extends AppCompatActivity implements RealmChangeListen
                 String name = etName.getText().toString().trim();
                 String country = etCountry.getText().toString().trim();
                 if (validate(name) && validate(country)){
-                    update(name,country,place);
+                    PlaceRepository.update(realm,place,name,country);
                 }else{
                     Toast.makeText(getApplicationContext(),"¡Campos obligatorios!",Toast.LENGTH_SHORT).show();
                 }
@@ -156,7 +157,7 @@ public class MainActivity extends AppCompatActivity implements RealmChangeListen
         builder.setPositiveButton("Eliminar", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                delete(place);
+                PlaceRepository.delete(realm,place);
             }
         });
 
@@ -183,30 +184,5 @@ public class MainActivity extends AppCompatActivity implements RealmChangeListen
         }
 
         return isValid;
-    }
-
-    public void insert(String name,String country){
-        realm.beginTransaction();
-        Place place = new Place(name,country);
-        realm.copyToRealm(place);
-        realm.commitTransaction();
-    }
-
-    public void select(){
-        places = realm.where(Place.class).findAll();
-    }
-
-    public void update(String name,String country,Place place){
-        realm.beginTransaction();
-        place.setName(name);
-        place.setCountry(country);
-        realm.commitTransaction();
-    }
-
-    public void delete(Place place){
-        realm.beginTransaction();
-        assert place != null;
-        place.deleteFromRealm();
-        realm.commitTransaction();
     }
 }

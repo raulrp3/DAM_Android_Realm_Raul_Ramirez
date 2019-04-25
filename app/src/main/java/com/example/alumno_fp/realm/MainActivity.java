@@ -14,7 +14,8 @@ import android.widget.Toast;
 
 import com.example.alumno_fp.realm.adapters.PlaceAdapter;
 import com.example.alumno_fp.realm.models.Place;
-import com.example.alumno_fp.realm.repository.PlaceRepository;
+import com.example.alumno_fp.realm.repositories.PlaceRepository;
+import com.example.alumno_fp.realm.utils.MValidation;
 
 import io.realm.Realm;
 import io.realm.RealmChangeListener;
@@ -90,7 +91,7 @@ public class MainActivity extends AppCompatActivity implements RealmChangeListen
             public void onClick(DialogInterface dialog, int which) {
                 String name = etName.getText().toString().trim();
                 String country = etCountry.getText().toString().trim();
-                if (validate(name) && validate(country)){
+                if (MValidation.validateEmpty(name) && MValidation.validateEmpty(country)){
                     PlaceRepository.insert(realm,name,country);
                 }else{
                     Toast.makeText(getApplicationContext(),"¡Campos obligatorios!",Toast.LENGTH_SHORT).show();
@@ -129,7 +130,7 @@ public class MainActivity extends AppCompatActivity implements RealmChangeListen
             public void onClick(DialogInterface dialog, int which) {
                 String name = etName.getText().toString().trim();
                 String country = etCountry.getText().toString().trim();
-                if (validate(name) && validate(country)){
+                if (MValidation.validateEmpty(name) && MValidation.validateEmpty(country)){
                     PlaceRepository.update(realm,place,name,country);
                 }else{
                     Toast.makeText(getApplicationContext(),"¡Campos obligatorios!",Toast.LENGTH_SHORT).show();
@@ -175,14 +176,5 @@ public class MainActivity extends AppCompatActivity implements RealmChangeListen
     @Override
     public void onChange(RealmResults<Place> places) {
         placeAdapter.notifyDataSetChanged();
-    }
-
-    private boolean validate(String string){
-        boolean isValid = true;
-        if (string.isEmpty()){
-            isValid = false;
-        }
-
-        return isValid;
     }
 }

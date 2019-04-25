@@ -1,4 +1,4 @@
-package com.example.alumno_fp.realm.repository;
+package com.example.alumno_fp.realm.repositories;
 
 import com.example.alumno_fp.realm.models.Place;
 

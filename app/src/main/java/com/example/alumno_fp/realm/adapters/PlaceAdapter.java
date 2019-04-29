@@ -59,6 +59,7 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.ViewHolderPl
         String date = format.format(places.get(i).getDate());
         viewHolderPlace.textDate.setText(date);
         viewHolderPlace.textCountry.setText(places.get(i).getCountry());
+        viewHolderPlace.textCategory.setText(places.get(i).getCategory().getName());
     }
 
     @Override
@@ -71,6 +72,7 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.ViewHolderPl
         TextView textName;
         TextView textCountry;
         TextView textDate;
+        TextView textCategory;
 
         public ViewHolderPlace(View itemView){
             super(itemView);
@@ -78,6 +80,7 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.ViewHolderPl
             textName = itemView.findViewById(R.id.textName);
             textCountry = itemView.findViewById(R.id.textCountry);
             textDate = itemView.findViewById(R.id.textDate);
+            textCategory = itemView.findViewById(R.id.textCategory);
         }
     }
 }

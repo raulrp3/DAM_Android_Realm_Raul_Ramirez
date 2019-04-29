@@ -1,5 +1,6 @@
 package com.example.alumno_fp.realm.repositories;
 
+import com.example.alumno_fp.realm.models.Category;
 import com.example.alumno_fp.realm.models.Place;
 
 import io.realm.Realm;
@@ -7,9 +8,9 @@ import io.realm.RealmResults;
 
 public class PlaceRepository {
 
-    public static void insert(Realm realm,String name,String country){
+    public static void insert(Realm realm, String name, String country, Category category){
         realm.beginTransaction();
-        Place place = new Place(name,country);
+        Place place = new Place(name,country,category);
         realm.copyToRealm(place);
         realm.commitTransaction();
     }

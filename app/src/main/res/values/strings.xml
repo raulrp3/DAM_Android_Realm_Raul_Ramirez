@@ -3,4 +3,5 @@
     <string name="hintName">Nombre del lugar:</string>
     <string name="hintCountry">País:</string>
     <string name="confirm">¿Seguro que desea eliminar este lugar?</string>
+    <string name="category">Categoría: </string>
 </resources>

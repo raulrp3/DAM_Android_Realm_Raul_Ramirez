@@ -12,16 +12,18 @@ public class Place extends RealmObject {
     private String name;
     private String country;
     private Date date;
+    private Category category;
 
     public Place(){
 
     }
 
-    public Place(String name, String country) {
+    public Place(String name, String country,Category category) {
         this.id = MApplication.placeId.incrementAndGet();
         this.name = name;
         this.country = country;
         this.date = new Date();
+        this.category = category;
     }
 
     public int getId() {
@@ -54,6 +56,14 @@ public class Place extends RealmObject {
 
     public void setDate(Date date) {
         this.date = date;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
     }
 
     @Override

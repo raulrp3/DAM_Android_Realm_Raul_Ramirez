@@ -7,17 +7,25 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.example.alumno_fp.realm.adapters.PlaceAdapter;
 import com.example.alumno_fp.realm.interfaces.AdapterCustomClick;
+import com.example.alumno_fp.realm.models.Category;
 import com.example.alumno_fp.realm.models.Place;
+import com.example.alumno_fp.realm.repositories.CategoryRepository;
 import com.example.alumno_fp.realm.repositories.PlaceRepository;
 import com.example.alumno_fp.realm.utils.MValidation;
+
+import java.util.List;
 
 import io.realm.Realm;
 import io.realm.RealmChangeListener;
@@ -30,6 +38,9 @@ public class MainActivity extends AppCompatActivity implements RealmChangeListen
     private RealmResults<Place> places;
     private RecyclerView rvPlaces;
     private PlaceAdapter placeAdapter;
+    private List<Category> categories;
+    private ArrayAdapter<Category> categoryAdapter;
+    private Category category;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +56,8 @@ public class MainActivity extends AppCompatActivity implements RealmChangeListen
         buttonAdd = findViewById(R.id.fabAdd);
         places = PlaceRepository.select(realm,places);
         places.addChangeListener(this);
+        categories = CategoryRepository.getInstance().getCategories();
+        categoryAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, categories);
         rvPlaces = findViewById(R.id.rvPlaces);
         rvPlaces.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         placeAdapter = new PlaceAdapter(getApplicationContext(), places, new AdapterCustomClick() {
@@ -83,6 +96,19 @@ public class MainActivity extends AppCompatActivity implements RealmChangeListen
 
         final EditText etName = view.findViewById(R.id.etName);
         final EditText etCountry = view.findViewById(R.id.etCountry);
+        final Spinner spinnerCategory = view.findViewById(R.id.spinnerCategory);
+        spinnerCategory.setAdapter(categoryAdapter);
+        spinnerCategory.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                category = (Category) spinnerCategory.getItemAtPosition(position);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
 
         builder.setMessage(message);
         builder.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
@@ -100,7 +126,7 @@ public class MainActivity extends AppCompatActivity implements RealmChangeListen
                         String name = etName.getText().toString().trim();
                         String country = etCountry.getText().toString().trim();
                         if (MValidation.validateEmpty(name) && MValidation.validateEmpty(country)){
-                            PlaceRepository.insert(realm,name,country);
+                            PlaceRepository.insert(realm,name,country,category);
                         }else{
                             Toast.makeText(getApplicationContext(),"¡Campos obligatorios! Rellen los campos.", Toast.LENGTH_SHORT).show();
                         }
